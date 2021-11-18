@@ -8,14 +8,15 @@ from algebraics.operations import *
 from integrals.integrator import *
 from analytics.investigator import *
 
-def solveLinear(odeString, functionName):
+def solveLinear(odeString, functionName, user_type):
+  
   '''
     ------------------------------------------------------
     # Init solve
     ------------------------------------------------------
   '''
   solveArray = []
-
+  
   try: 
     odeLeftString = odeString.split("=")[0]
     odeRightString = odeString.split("=")[1]
@@ -85,44 +86,67 @@ def solveLinear(odeString, functionName):
     h4 = "So, it is 1st order linear" + "\\\\ \\\\"
     subSteps.append(h4)
 
-    # Step 2 Calculate integral factor
+    '''
+    ------------------------------------------------------
+    # Step 02: Calculate integral factor
+    ------------------------------------------------------
+    '''
+    solveArray.append([])
+    step = solveArray[1]
+    step.append("- Calculate integral factor" + "\\\\ \\\\")
+    step.append([])
+    subSteps = step[1]
 
     h1s2 = "Lets propose a function M(x) such that: " + "\\\\ \\\\"
+    subSteps.append(h1s2)
+
     eqAux = Eq(Mul(Function('M')(x), Function('f')(x)), Derivative(Function('M')(x), x))
     eq1s2 = "$" +  latex(eqAux) + "$" + "\\\\ \\\\"
+    subSteps.append(eq1s2)
+
     h2s2 = "Substituting: " + "\\\\ \\\\"
+    subSteps.append(h2s2)
+    
     eq2s2 = "$" + latex(Eq(Mul(Function('M')(x), functionF), Derivative(Function('M')(x), x))) + "$" + "\\\\ \\\\"
+    subSteps.append(eq2s2)
+    
     h3s2 = "Which is a 1st order separable diferential equation. Hence solving for M(x)" + "\\\\ \\\\"
+    subSteps.append(h3s2)
+    
     functionM = Pow(E, Integral(functionF, x))
     eq3s2 = "$" + latex(Eq(Mul(Pow(Function('M')(x), Integer(-1)), Symbol('dM(x)')), Mul(functionF, Symbol('(dx)')))) + "$" + "\\\\ \\\\"
+    subSteps.append(eq3s2)
+    
     eq4s2 = "$" + latex(Eq(log(Function('M')(x)), Integral(functionF, x))) + "$" + "\\\\ \\\\"
+    subSteps.append(eq4s2)    
+    
     functionF = expand(functionF)
     exponentM = integrate(expand(functionF), x)
     eq5s2 = "$" + latex(Eq(log(Function('M')(x)), exponentM)) + "$" + "\\\\ \\\\"
+    subSteps.append(eq5s2)    
+    
     eq6s2 = "$" + latex(Function('M')(x)) + " = " + latex(Pow(E, exponentM))+ "$" + "\\\\ \\\\"
+    subSteps.append(eq6s2)    
+
+    '''
+    ------------------------------------------------------
+    # Step 03: Reduce to 1st order separable ODE
+    ------------------------------------------------------
+    '''
+    solveArray.append([])
+    step = solveArray[2]
+    step.append("- Reduce to 1st Order Separable ODE" + "\\\\ \\\\")
+    step.append([])
+    subSteps = step[1]
 
     functionM = functionM.replace(Integral(functionF, x), exponentM)
     functionM = Pow(E, exponentM)
     functionM = simplify(functionM)
 
-    step = []
-    step.append("- Calculate integral factor" + "\\\\ \\\\")
-    subSteps = []
-    subSteps.append(h1s2)
-    subSteps.append(eq1s2)
-    subSteps.append(h2s2)
-    subSteps.append(eq2s2)
-    subSteps.append(h3s2)
-    subSteps.append(eq3s2)
-    subSteps.append(eq4s2)    
-    subSteps.append(eq5s2)    
-    subSteps.append(eq6s2)    
-    step.append(subSteps)
-    solveArray.append(step)
-
-    # Step 3 Reduce to 1st order separable ODE
 
     h1s3 = "Multiplying the original equation by M(x):" + "\\\\ \\\\"
+    subSteps.append(h1s3)
+    
     equation = Eq(left, right)
     left = Mul(left, functionM)
     right = Add(Mul(Integer(-1), functionF, y(x), functionM), Mul(functionG, functionM))
@@ -134,34 +158,45 @@ def solveLinear(odeString, functionName):
     equationaux = Eq(expand(Mul( Function('M')(x), left, pow(functionM, Integer(-1)))), Mul( Function('M')(x), right, pow(functionM, Integer(-1))))
 
     eq1s3 = "$" + latex(equationaux) + "$" + "\\\\ \\\\"
+    subSteps.append(eq1s3)
+    
     h2s3 = "By the definition of M(x) this is equivalent to: " +  "\\\\ \\\\"
+    subSteps.append(h2s3)
+    
     eq2s3 = "$" + latex(Add(Mul(Derivative(y(x),x), Function('M')(x)),Mul(y(x), Derivative(Function('M')(x), x)))) + " = " + latex(Mul(functionG, Function('M')(x))) +  "$" + "\\\\ \\\\"
+    subSteps.append(eq2s3)
+    
     h3s3 = "Notice that the left hand side can be reduce by the chain rule to: " + "\\\\ \\\\"
+    subSteps.append(h3s3)
+    
     eq3s3 = "$" + latex(Add(Mul(Derivative(y(x),x), Function('M')(x)),Mul(y(x), Derivative(Function('M')(x), x)))) + " = " + latex(Derivative(Mul(y(x), Function('M')(x)),x)) +  "$" + "\\\\ \\\\"
+    subSteps.append(eq3s3)  
+    
     h4s3 = "Therefore: " + "\\\\ \\\\"
+    subSteps.append(h4s3)
+    
     eq4s3 = "$" + latex(Derivative(Mul(y(x), Function('M')(x)),x)) + " = " + latex(Mul(functionG, Function('M')(x))) +  "$" + "\\\\ \\\\"
+    subSteps.append(eq4s3)
+    
     h5s3 = "Which again is a 1st order separable diferential equation" + "\\\\ \\\\"
+    subSteps.append(h5s3)   
+    
     equationaux = Eq(Symbol('dM(x)'+functionName+'(x)'), factor(Mul(Symbol('(dx)'),functionG, Function('M')(x))))
     eq5s3 = "$" + latex(equationaux)+  "$" + "\\\\ \\\\"
-
-    step = []
-    step.append("- Reduce to 1st Order Separable ODE" + "\\\\ \\\\")
-    subSteps = []
-    subSteps.append(h1s3)
-    subSteps.append(eq1s3)
-    subSteps.append(h2s3)
-    subSteps.append(eq2s3)
-    subSteps.append(h3s3)
-    subSteps.append(eq3s3)  
-    subSteps.append(h4s3)
-    subSteps.append(eq4s3)
-    subSteps.append(h5s3)   
     subSteps.append(eq5s3)
-    step.append(subSteps)
-    solveArray.append(step)
 
-    # Step 4 Get implicit solve
-
+  
+    '''
+    ------------------------------------------------------
+    # Step 04: Get implicit solve
+    ------------------------------------------------------
+    '''
+    solveArray.append([])
+    step = solveArray[3]
+    step.append("- Get implicit solution" + "\\\\ \\\\")
+    step.append([])
+    subSteps = step[1]
+    
     left = Derivative(Mul(functionM, y(x)), x)
 
     equation = Eq(left, right)
@@ -169,50 +204,158 @@ def solveLinear(odeString, functionName):
     right = Mul(right, Symbol('dx'))
     equation = Eq(left, right)
     h6s3 = "Integrating the left hand side, and indicating the integral at right hand side: " + "\\\\ \\\\"
+    subSteps.append(h6s3)   
+ 
     left = Mul(y(x), functionM)
     right = Mul(right, Pow(Symbol('dx'), Integer(-1)))
     eq6s3 = "$" + latex(Symbol('M(x)'+functionName+'(x)'))+ " = " + latex(Integral(Mul(Mul(right, Pow(functionM, Integer(-1))),Function('M')(x)),x)) + "$" + "\\\\ \\\\"
+    subSteps.append(eq6s3)
+ 
     h7s3 = "Substituting M(x) = " + "\\\\ \\\\"
+    subSteps.append(h7s3)
+    
     eqAux1 = "$" + latex(functionM) + "$" +  "\\\\ \\\\"
+    subSteps.append(eqAux1) 
+    
     equationaux = Eq(left, Integral(right,x))
     eq7s3 = "$" + latex(equationaux)+ "$" + "\\\\ \\\\"
+    subSteps.append(eq7s3)
+    
     right = expand(right)
     right = integrate(right, x)
     right = Add(right, Symbol('C'))
     equation = Eq(left, right)
+    
     h8s3 = "Integrating the right hand side: " + "\\\\ \\\\"
-    eq8s3 = "$" + latex(equation)+ "$" + "\\\\ \\\\"
-
-    step = []
-    step.append("- Get implicit solution" + "\\\\ \\\\")
-    subSteps = []
-    subSteps.append(h6s3)   
-    subSteps.append(eq6s3)
-    subSteps.append(h7s3)
-    subSteps.append(eqAux1) 
-    subSteps.append(eq7s3)
     subSteps.append(h8s3) 
+    
+    eq8s3 = "$" + latex(equation)+ "$" + "\\\\ \\\\"
     subSteps.append(eq8s3)
-    step.append(subSteps)
-    solveArray.append(step)
 
-    # Step 5 Solve for y
+    '''
+    ------------------------------------------------------
+    # Step 05: Obtain solution
+    ------------------------------------------------------
+    '''
+    solveArray.append([])
+    step = solveArray[4]
+    step.append("- Solve for " + functionName + "\\\\ \\\\")
+    step.append([])
+    subSteps = step[1]
 
     left = y(x)
     right = Mul(right, Pow(functionM, Integer(-1)))
     right = simplify(right)
     equation = Eq(left, right)
     h9s3 = "Solve for " + "\\\\ \\\\"
+    subSteps.append(h9s3) 
+
     eqAux = latex(Symbol(functionName+'(x)')) + + "\\\\ \\\\"
     eq9s3 = "$" + latex(equation)+ "$" + "\\\\ \\\\"
-
-    step = []
-    step.append("- Solve for " + functionName + "\\\\ \\\\")
-    subSteps = []
-    subSteps.append(h9s3) 
     subSteps.append(eq9s3)
-    step.append(subSteps)
-    solveArray.append(step)
+    
+    global finalSolve
+    finalSolve = []
+    
+    def final_solve_timeout(expression, symbol):
+      global finalSolve
+      finalSolve = solve(expression, symbol)
+
+    try:
+      process = PropagatingThread(target = final_solve_timeout, args=(equation, Symbol(functionName)))
+      process.start()
+      process.join(timeout=5)
+
+      for singleSolve in finalSolve:
+        eq1s6 = Eq(y(x), singleSolve)
+        subSteps.append("$" + latex(eq1s6) + "$" + "\\\\ \\\\") 
+
+        # Analytic intervention for all the single solves if is teacher
+        if (user_type == 'teacher'):
+          print("Teacher")
+          try:
+            roots = []
+            roots_process = PropagatingThread(target = get_roots, args = [singleSolve, roots])
+            roots_process.start()
+            roots_process.join(timeout = 3)
+
+            h0 = "Whose roots are: " + "\\\\ \\\\"
+            subSteps.append(h0) 
+            subIndex = 1
+            for root in roots:
+              eq0 = "$" + "x_{" + str(subIndex) + "} = " + latex(root) + "$" + "\\\\ \\\\"
+              subIndex = subIndex + 1
+              subSteps.append(eq0)
+
+          except Exception as e:
+            print("Error with roots")
+            print(e)
+
+          try:
+            critics = []
+            critics_process = PropagatingThread(target = max_min, args = [singleSolve, critics])
+            critics_process.start()
+            critics_process.join(timeout = 3)
+
+            h0 = "Whose critics are: " + "\\\\ \\\\"
+            subSteps.append(h0)
+            subIndex = 1
+            for critic in critics:
+              eq0 = "$" + "x_{" + str(subIndex) + "} = " + latex(critic) + "$" + "\\\\ \\\\"
+              subIndex = subIndex + 1
+              subSteps.append(eq0)
+
+          except Exception as e:
+            print("Error with critics")
+            print(e)
+
+          try:
+            inflexions = []
+            inflexions_process = PropagatingThread(target = inflexion_points, args = [singleSolve, inflexions])
+            inflexions_process.start()
+            inflexions_process.join(timeout = 3)
+
+            h0 = "Whose inflexions are: " + "\\\\ \\\\"
+            subSteps.append(h0)
+            subIndex = 1
+            for inflexion in inflexions:
+              eq0 = "$" + "x_{" + str(subIndex) + "} = " + latex(inflexion) + "$" + "\\\\ \\\\"
+              subIndex = subIndex + 1
+              subSteps.append(eq0)
+
+          except Exception as e:
+            print("Error with inflexions")
+            print(e)
+
+      if (user_type == "teacher"):
+        '''
+        ------------------------------------------------------
+        # Step 07: Generate Plot
+        ------------------------------------------------------
+        '''
+        solveArray.append([])
+        step = solveArray[6]
+        step.append("- Graphs" + "\\\\ \\\\")
+        step.append([])
+        subSteps = step[1]
+
+        for singleSolve in finalSolve:
+          # Add plot step to solution
+          print("Creating plot")
+
+          try:
+            plot_string = create_plot(singleSolve)[1:]
+            plot_string = plot_string.replace("\\n", "")
+          except Exception as e:
+            print(e)
+
+          subSteps.append(plot_string)
+          print("Plot appended")      
+      
+    except:
+      subSteps.append("Can not get the explicit solution solving for " + functionName + "\\\\ \\\\")
+
+
 
     def display_step(step):
       stepStr = ""

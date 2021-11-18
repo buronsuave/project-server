@@ -1,8 +1,6 @@
 from sympy import * 
 from sympy.abc import x 
 from sympy.parsing import parse_expr 
-from sympy.parsing.latex import parse_latex
-
 from solvers.sys_solvers.solve_separable import *
 
 def solveHomogeneous(odeString, functionName, user_type):
@@ -15,133 +13,235 @@ def solveHomogeneous(odeString, functionName, user_type):
   # Init solve array
   solveArray = []
 
-  '''
-  ------------------------------------------------------
-  # Initial algebraic analysis
-  ------------------------------------------------------
-  '''
-
-
-  odeLeftString = odeString.split("=")[0]
-  odeRightString = odeString.split("=")[1]
-
-  odeLeftSym = parse_expr(odeLeftString)
-  odeRightSym = parse_expr(odeRightString)
-
-  y = Function(functionName)
-  equation = Eq(odeLeftSym - odeRightSym, 0)
-
-  # Step 1
-  left = equation.args[0]
-  exp = solve(left, Derivative(y(x), x))
-  aux = expand(exp[0])
-
-  left = Derivative(y(x), x)
-  # Define the change of variable
-  functionF = aux
-
-
-  '''
-  ------------------------------------------------------
-  # Step 01: Propose the appropriate variable change to reduce to separable
-  ------------------------------------------------------
-  '''
-  solveArray.append([])
-  step = solveArray[0]
-  step.append("- Propose the appropriate variable change to reduce to separable" + "\\\\ \\\\")
-  step.append([])
-  subSteps = step[1]
-
-  #Define function u(x)
-  u = Function('u')
-
-  h0 = "Since it's homogeneous, the derivative can be expressed as a function that is also homogeneous, that is:" + "\\\\ \\\\"
-  subSteps.append(h0)
+  try:
   
-  eq0 = "$" + latex(Eq(Derivative(y(x), x), functionF)) + "$" + "\\\\ \\\\"
-  subSteps.append(eq0)
+    '''
+    ------------------------------------------------------
+    # Initial algebraic analysis
+    ------------------------------------------------------
+    '''
 
-  #Perform the substitution
-  functionF = functionF.subs(y(x), Mul(u(x), x))
-  left = Add(Mul(Derivative(u(x), x), x), u(x))
 
-  h1 = "Using the change of variable: " + "\\\\ \\\\"
-  subSteps.append(h1)
-  
-  eq1 = "$" + latex(Eq(y(x), Mul(u(x), x))) + "$" + "\\\\ \\\\"
-  subSteps.append(eq1)  
+    odeLeftString = odeString.split("=")[0]
+    odeRightString = odeString.split("=")[1]
 
-  h2 = "Whose derivative is: " + "\\\\ \\\\"
-  subSteps.append(h2)
-  
-  eq2 = "$" + latex(Eq(Derivative(y(x), x), Add(u(x), Mul(Derivative(u(x), x))))) + "$" + "\\\\ \\\\"
-  subSteps.append(eq2)
-  
-  h3 = "Carrying out the changes for the function and its derivative in the original equation: " + "\\\\ \\\\"
-  subSteps.append(h3)
+    odeLeftSym = parse_expr(odeLeftString)
+    odeRightSym = parse_expr(odeRightString)
 
-  eq3 = "$" + latex(Eq(left, functionF)) + "$" + "\\\\ \\\\"
-  subSteps.append(eq3)
+    y = Function(functionName)
+    equation = Eq(odeLeftSym - odeRightSym, 0)
 
-  left = Add(left, Mul(functionF, Integer(-1)))
-  left = expand(left)
-  separableODE = Eq(left, Integer(0))
+    # Step 1
+    left = equation.args[0]
+    exp = solve(left, Derivative(y(x), x))
+    aux = expand(exp[0])
 
-  h4 = "Simplifying: " + "\\\\ \\\\"
-  subSteps.append(h4)
-  
-  eq4 = "$" + latex(separableODE) + "$" + "\\\\ \\\\"
-  subSteps.append(eq4)
-  
-  h5 = "Wich is first order separable" + "\\\\ \\\\"
-  subSteps.append(h5)
-  
-  solutionSeparable = solveSeparable(str(separableODE.args[0]) + "= 0", 'u', user_type)
-  solveArray += solutionSeparable[1]
+    left = Derivative(y(x), x)
+    # Define the change of variable
+    functionF = aux
 
-  solveForU = solutionSeparable[2]
 
-  '''
-  ------------------------------------------------------
-  # Step 02: Get Explicit Solve
-  ------------------------------------------------------
-  '''
-  solveArray.append([])
-  step = solveArray[1]
-  step.append("- Undo the variable change" + "\\\\ \\\\")
-  step.append([])
-  subSteps = step[1]
-  
-  global finalSolve
-  finalSolve = []
+    '''
+    ------------------------------------------------------
+    # Step 01: Propose the appropriate variable change to reduce to separable
+    ------------------------------------------------------
+    '''
+    solveArray.append([])
+    step = solveArray[0]
+    step.append("- Propose the appropriate variable change to reduce to separable" + "\\\\ \\\\")
+    step.append([])
+    subSteps = step[1]
 
-  def final_solve_timeout(expression, symbol):
+    #Define function u(x)
+    u = Function('u')
+
+    h0 = "Since it's homogeneous, the derivative can be expressed as a function that is also homogeneous, that is:" + "\\\\ \\\\"
+    subSteps.append(h0)
+    
+    eq0 = "$" + latex(Eq(Derivative(y(x), x), functionF)) + "$" + "\\\\ \\\\"
+    subSteps.append(eq0)
+
+    #Perform the substitution
+    functionF = functionF.subs(y(x), Mul(u(x), x))
+    left = Add(Mul(Derivative(u(x), x), x), u(x))
+
+    h1 = "Using the change of variable: " + "\\\\ \\\\"
+    subSteps.append(h1)
+    
+    eq1 = "$" + latex(Eq(y(x), Mul(u(x), x))) + "$" + "\\\\ \\\\"
+    subSteps.append(eq1)  
+
+    h2 = "Whose derivative is: " + "\\\\ \\\\"
+    subSteps.append(h2)
+    
+    eq2 = "$" + latex(Eq(Derivative(y(x), x), Add(u(x), Mul(Derivative(u(x), x))))) + "$" + "\\\\ \\\\"
+    subSteps.append(eq2)
+    
+    h3 = "Carrying out the changes for the function and its derivative in the original equation: " + "\\\\ \\\\"
+    subSteps.append(h3)
+
+    eq3 = "$" + latex(Eq(left, functionF)) + "$" + "\\\\ \\\\"
+    subSteps.append(eq3)
+
+    left = Add(left, Mul(functionF, Integer(-1)))
+    left = expand(left)
+    separableODE = Eq(left, Integer(0))
+
+    h4 = "Simplifying: " + "\\\\ \\\\"
+    subSteps.append(h4)
+    
+    eq4 = "$" + latex(separableODE) + "$" + "\\\\ \\\\"
+    subSteps.append(eq4)
+    
+    h5 = "Wich is first order separable" + "\\\\ \\\\"
+    subSteps.append(h5)
+    
+    solutionSeparable = solveSeparable(str(separableODE.args[0]) + "= 0", 'u', user_type)
+    solveArray += solutionSeparable[1]
+
+    #Final Solution
+    solveForU = solutionSeparable[2]
+
+    '''
+    ------------------------------------------------------
+    # Step 02: Get Explicit Solve
+    ------------------------------------------------------
+    '''
+    solveArray.append([])
+    step = solveArray[1]
+    step.append("- Undo the variable change" + "\\\\ \\\\")
+    step.append([])
+    subSteps = step[1]
+    
     global finalSolve
-    finalSolve = solve(expression, symbol)
+    finalSolve = []
+
+    def final_solve_timeout(expression, symbol):
+      global finalSolve
+      finalSolve = solve(expression, symbol)
 
 
-  if (len(solveForU)) > 0:
-    h6 = "Multiplying both sides by x and using the change of variable for each solution" + "\\\\ \\\\"
-    subSteps.append(h6)
+    if (len(solveForU)) > 0:
+        try:
+          process = PropagatingThread(target = final_solve_timeout, args=(solveForU, Symbol(functionName)))
+          process.start()
+          process.join(timeout=5)
+
+          for singleSolve in finalSolve:
+            eq1s6 = Eq(y(x), singleSolve)
+            subSteps.append("$" + latex(eq1s6) + "$" + "\\\\ \\\\") 
+
+            # Analytic intervention for all the single solves if is teacher
+            if (user_type == 'teacher'):
+              print("Teacher")
+              try:
+                roots = []
+                roots_process = PropagatingThread(target = get_roots, args = [singleSolve, roots])
+                roots_process.start()
+                roots_process.join(timeout = 3)
+
+                h0 = "Whose roots are: " + "\\\\ \\\\"
+                subSteps.append(h0) 
+                subIndex = 1
+                for root in roots:
+                  eq0 = "$" + "x_{" + str(subIndex) + "} = " + latex(root) + "$" + "\\\\ \\\\"
+                  subIndex = subIndex + 1
+                  subSteps.append(eq0)
+
+              except Exception as e:
+                print("Error with roots")
+                print(e)
+
+              try:
+                critics = []
+                critics_process = PropagatingThread(target = max_min, args = [singleSolve, critics])
+                critics_process.start()
+                critics_process.join(timeout = 3)
+
+                h0 = "Whose critics are: " + "\\\\ \\\\"
+                subSteps.append(h0)
+                subIndex = 1
+                for critic in critics:
+                  eq0 = "$" + "x_{" + str(subIndex) + "} = " + latex(critic) + "$" + "\\\\ \\\\"
+                  subIndex = subIndex + 1
+                  subSteps.append(eq0)
+
+              except Exception as e:
+                print("Error with critics")
+                print(e)
+
+              try:
+                inflexions = []
+                inflexions_process = PropagatingThread(target = inflexion_points, args = [singleSolve, inflexions])
+                inflexions_process.start()
+                inflexions_process.join(timeout = 3)
+
+                h0 = "Whose inflexions are: " + "\\\\ \\\\"
+                subSteps.append(h0)
+                subIndex = 1
+                for inflexion in inflexions:
+                  eq0 = "$" + "x_{" + str(subIndex) + "} = " + latex(inflexion) + "$" + "\\\\ \\\\"
+                  subIndex = subIndex + 1
+                  subSteps.append(eq0)
+
+              except Exception as e:
+                print("Error with inflexions")
+                print(e)
+
+          if (user_type == "teacher"):
+            '''
+            ------------------------------------------------------
+            # Step 07: Generate Plot
+            ------------------------------------------------------
+            '''
+            solveArray.append([])
+            step = solveArray[6]
+            step.append("- Graphs" + "\\\\ \\\\")
+            step.append([])
+            subSteps = step[1]
+
+            for singleSolve in finalSolve:
+              # Add plot step to solution
+              print("Creating plot")
+
+              try:
+                plot_string = create_plot(singleSolve)[1:]
+                plot_string = plot_string.replace("\\n", "")
+              except Exception as e:
+                print(e)
+
+              subSteps.append(plot_string)
+              print("Plot appended")      
+          
+        except:
+          subSteps.append("Can not get the explicit solution solving for " + functionName + "\\\\ \\\\")
+
+    def display_step(step):
+      stepStr = ""
+      for subStep in step:
+        stepStr += str(subStep)
+      return stepStr
+
+    def display_solve(solveArray):
+      solveStr = ""
+      for stepAux in solveArray:
+        solveStr += stepAux[0]
+        solveStr += display_step(stepAux[1])
+      return solveStr    
+    return [ display_solve(solveArray), solveArray ]  
+  
+  except CompletenessAnomaly as ca:
     
-    for particularSolveForU in solveForU:
-      particularSolve = Eq(y(x), Mul(particularSolveForU, x))
-      eq5 = "$" + latex(particularSolve) + "$ \\\\ \\\\"
-      subSteps.append(eq5)
-    
-    step.append(subSteps)
-    solveArray.append(step)
+    if ca.partial_solution[0][0] == "partial integral":
+      step = solveArray[len(solveArray) - 1]
+      subSteps = step[1]
+      subSteps.append("-------------------------------" + "\\\\ \\\\")
 
-  def display_step(step):
-    stepStr = ""
-    for subStep in step:
-      stepStr += str(subStep)
-    return stepStr
+      for int_substep in ca.partial_solution[0][1]:
+        subSteps.append(int_substep["text"] + "\\\\ \\\\")
+        subSteps.append(int_substep["symbol"] + "\\\\ \\\\")
+        subSteps.append("-------------------------------" + "\\\\ \\\\")
 
-  def display_solve(solveArray):
-    solveStr = ""
-    for stepAux in solveArray:
-      solveStr += stepAux[0]
-      solveStr += display_step(stepAux[1])
-    return solveStr    
-  return [ display_solve(solveArray), solveArray ]  
+    ca.set_partial_solution(solveArray)
+
+    raise ca
