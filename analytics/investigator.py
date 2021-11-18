@@ -1,5 +1,4 @@
 from sympy import *
-import matplotlib.pyplot as plt
 import base64
 import uuid
 import os

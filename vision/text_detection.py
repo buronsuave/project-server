@@ -1,5 +1,4 @@
-import os, io
-import pandas as pd
+import os
 import base64
 
 from google.cloud import vision
