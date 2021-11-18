@@ -46,11 +46,12 @@ def solveHomogeneous(odeString, functionName, user_type):
   # Step 01: Propose the appropriate variable change to reduce to separable
   ------------------------------------------------------
   '''
-      solveArray.append([])
-    step = solveArray[0]
-    step.append("- Identify the separable equation and its parts" + "\\\\ \\\\")
-    step.append([])
-    subSteps = step[1]
+  solveArray.append([])
+  step = solveArray[0]
+  step.append("- Propose the appropriate variable change to reduce to separable" + "\\\\ \\\\")
+  step.append("- Identify the separable equation and its parts" + "\\\\ \\\\")
+  step.append([])
+  subSteps = step[1]
 
 
   h0 = "Since it's homogeneous, the derivative can be expressed as a function that is also homogeneous, that is:" + "\\\\ \\\\"
@@ -79,7 +80,6 @@ def solveHomogeneous(odeString, functionName, user_type):
   eq2 = "$" + latex(Eq(Derivative(y(x), x), Add(u(x), Mul(Derivative(u(x), x))))) + "$" + "\\\\ \\\\"
 
   step = []
-  step.append("- Propose the appropriate variable change to reduce to separable" + "\\\\ \\\\")
   subSteps = []
   subSteps.append(h0)
   subSteps.append(eq0)
