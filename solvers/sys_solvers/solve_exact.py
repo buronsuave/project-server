@@ -8,7 +8,8 @@ from algebraics.operations import *
 from integrals.integrator import *
 from analytics.investigator import *
 
-def solveExact(odeString):  
+def solveExact(odeString, functionName, user_type):  
+  
   '''
   ------------------------------------------------------
   # Init solve
@@ -21,14 +22,15 @@ def solveExact(odeString):
     # Initial algebraic analysis
     ------------------------------------------------------
     '''
+    # init solve array
+    solveArray = [] 
+
     odeLeftString = odeString.split("=")[0]
     odeRightString = odeString.split("=")[1]
 
     odeLeftSym = parse_expr(odeLeftString)
     odeRightSym = parse_expr(odeRightString)
 
-    # init solve array
-    solveArray = [] 
 
     y = Function('y')
     equation = Eq(odeLeftSym - odeRightSym, 0)
@@ -230,6 +232,10 @@ def solveExact(odeString):
 
 
     try:
+      process = PropagatingThread(target = final_solve_timeout, args=(functionF, Symbol(functionName)))
+      process.start()
+      process.join(timeout=5)
+
       solveY = solve(functionF, Symbol('y'))
       for singleSolve in solveY:
         eq1s5 = Eq(y(x), singleSolve)
