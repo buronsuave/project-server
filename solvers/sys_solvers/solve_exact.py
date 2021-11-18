@@ -210,11 +210,27 @@ def solveExact(odeString):
     subSteps.append(eq4s4)
 
 
+    '''
+    ------------------------------------------------------
+    # Step 05: Get the explicit solution solving for y
+    ------------------------------------------------------
+    '''
+    solveArray.append([])
+    step = solveArray[4]
+    step.append("- Get the explicit solution solving for y" + "\\\\ \\\\")
+    step.append([])
+    subSteps = step[1]
+
+    global finalSolve
+    finalSolve = []
+    
+    def final_solve_timeout(expression, symbol):
+      global finalSolve
+      finalSolve = solve(expression, symbol)
+
+
     try:
       solveY = solve(functionF, Symbol('y'))
-      step = []
-      step.append("- Get the explicit solution solving for y" + "\\\\ \\\\")
-      subSteps = []
       for singleSolve in solveY:
         eq1s5 = Eq(y(x), singleSolve)
         subSteps.append("$" + latex(eq1s5) + "$" + "\\\\ \\\\") 
