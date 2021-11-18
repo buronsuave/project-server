@@ -236,19 +236,96 @@ def solveExact(odeString, functionName, user_type):
       process.start()
       process.join(timeout=5)
 
-      solveY = solve(functionF, Symbol('y'))
-      for singleSolve in solveY:
+      
+      for singleSolve in finalSolve:
         eq1s5 = Eq(y(x), singleSolve)
         subSteps.append("$" + latex(eq1s5) + "$" + "\\\\ \\\\") 
-      step.append(subSteps)
-      solveArray.append(step)
+
+        # Analytic intervention for all the single solves if is teacher
+        if (user_type == 'teacher'):
+          print("Teacher")
+          try:
+            roots = []
+            roots_process = PropagatingThread(target = get_roots, args = [singleSolve, roots])
+            roots_process.start()
+            roots_process.join(timeout = 3)
+
+            h0 = "Whose roots are: " + "\\\\ \\\\"
+            subSteps.append(h0) 
+            subIndex = 1
+            for root in roots:
+              eq0 = "$" + "x_{" + str(subIndex) + "} = " + latex(root) + "$" + "\\\\ \\\\"
+              subIndex = subIndex + 1
+              subSteps.append(eq0)
+
+          except Exception as e:
+            print("Error with roots")
+            print(e)
+
+          try:
+            critics = []
+            critics_process = PropagatingThread(target = max_min, args = [singleSolve, critics])
+            critics_process.start()
+            critics_process.join(timeout = 3)
+
+            h0 = "Whose critics are: " + "\\\\ \\\\"
+            subSteps.append(h0)
+            subIndex = 1
+            for critic in critics:
+              eq0 = "$" + "x_{" + str(subIndex) + "} = " + latex(critic) + "$" + "\\\\ \\\\"
+              subIndex = subIndex + 1
+              subSteps.append(eq0)
+
+          except Exception as e:
+            print("Error with critics")
+            print(e)
+
+          try:
+            inflexions = []
+            inflexions_process = PropagatingThread(target = inflexion_points, args = [singleSolve, inflexions])
+            inflexions_process.start()
+            inflexions_process.join(timeout = 3)
+
+            h0 = "Whose inflexions are: " + "\\\\ \\\\"
+            subSteps.append(h0)
+            subIndex = 1
+            for inflexion in inflexions:
+              eq0 = "$" + "x_{" + str(subIndex) + "} = " + latex(inflexion) + "$" + "\\\\ \\\\"
+              subIndex = subIndex + 1
+              subSteps.append(eq0)
+
+          except Exception as e:
+            print("Error with inflexions")
+            print(e)
+
+      if (user_type == "teacher"):
+        '''
+        ------------------------------------------------------
+        # Step 07: Generate Plot
+        ------------------------------------------------------
+        '''
+        solveArray.append([])
+        step = solveArray[6]
+        step.append("- Graphs" + "\\\\ \\\\")
+        step.append([])
+        subSteps = step[1]
+
+        for singleSolve in finalSolve:
+          # Add plot step to solution
+          print("Creating plot")
+
+          try:
+            plot_string = create_plot(singleSolve)[1:]
+            plot_string = plot_string.replace("\\n", "")
+          except Exception as e:
+            print(e)
+
+          subSteps.append(plot_string)
+          print("Plot appended")      
+      
     except:
-      step = []
-      step.append("- Can not get the explicit solution solving for y" + "\\\\ \\\\")
-      subSteps = []
-      step.append(subSteps)
-      solveArray.append(step)
-  
+      subSteps.append("Can not get the explicit solution solving for " + functionName + "\\\\ \\\\")
+    
     def display_step(step):
       stepStr = ""
       for subStep in step:

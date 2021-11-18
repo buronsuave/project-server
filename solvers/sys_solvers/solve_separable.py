@@ -243,7 +243,7 @@ def solveSeparable(odeString, functionName, user_type):
             roots_process.join(timeout = 3)
 
             h0 = "Whose roots are: " + "\\\\ \\\\"
-            subSteps.append(h0)
+            subSteps.append(h0) 
             subIndex = 1
             for root in roots:
               eq0 = "$" + "x_{" + str(subIndex) + "} = " + latex(root) + "$" + "\\\\ \\\\"
