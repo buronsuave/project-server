@@ -49,61 +49,79 @@ def solveHomogeneous(odeString, functionName, user_type):
   solveArray.append([])
   step = solveArray[0]
   step.append("- Propose the appropriate variable change to reduce to separable" + "\\\\ \\\\")
-  step.append("- Identify the separable equation and its parts" + "\\\\ \\\\")
   step.append([])
   subSteps = step[1]
 
-
-  h0 = "Since it's homogeneous, the derivative can be expressed as a function that is also homogeneous, that is:" + "\\\\ \\\\"
-  eq0 = "$" + latex(Eq(Derivative(y(x), x), functionF)) + "$" + "\\\\ \\\\"
-
+  #Define function u(x)
   u = Function('u')
 
+  h0 = "Since it's homogeneous, the derivative can be expressed as a function that is also homogeneous, that is:" + "\\\\ \\\\"
+  subSteps.append(h0)
+  
+  eq0 = "$" + latex(Eq(Derivative(y(x), x), functionF)) + "$" + "\\\\ \\\\"
+  subSteps.append(eq0)
+
+  #Perform the substitution
   functionF = functionF.subs(y(x), Mul(u(x), x))
   left = Add(Mul(Derivative(u(x), x), x), u(x))
+
+  h1 = "Using the change of variable: " + "\\\\ \\\\"
+  subSteps.append(h1)
+  
+  eq1 = "$" + latex(Eq(y(x), Mul(u(x), x))) + "$" + "\\\\ \\\\"
+  subSteps.append(eq1)  
+
+  h2 = "Whose derivative is: " + "\\\\ \\\\"
+  subSteps.append(h2)
+  
+  eq2 = "$" + latex(Eq(Derivative(y(x), x), Add(u(x), Mul(Derivative(u(x), x))))) + "$" + "\\\\ \\\\"
+  subSteps.append(eq2)
   
   h3 = "Carrying out the changes for the function and its derivative in the original equation: " + "\\\\ \\\\"
+  subSteps.append(h3)
+
   eq3 = "$" + latex(Eq(left, functionF)) + "$" + "\\\\ \\\\"
+  subSteps.append(eq3)
 
   left = Add(left, Mul(functionF, Integer(-1)))
   left = expand(left)
   separableODE = Eq(left, Integer(0))
 
   h4 = "Simplifying: " + "\\\\ \\\\"
-  eq4 = "$" + latex(separableODE) + "$" + "\\\\ \\\\"
-  h5 = "Wich is first order separable" + "\\\\ \\\\"
-
-  h1 = "Using the change of variable: " + "\\\\ \\\\"
-  eq1 = "$" + latex(Eq(y(x), Mul(u(x), x))) + "$" + "\\\\ \\\\"
-
-  h2 = "Whose derivative is: " + "\\\\ \\\\"
-  eq2 = "$" + latex(Eq(Derivative(y(x), x), Add(u(x), Mul(Derivative(u(x), x))))) + "$" + "\\\\ \\\\"
-
-  step = []
-  subSteps = []
-  subSteps.append(h0)
-  subSteps.append(eq0)
-  subSteps.append(h1)
-  subSteps.append(eq1)
-  subSteps.append(h2)
-  subSteps.append(eq2)
-  subSteps.append(h3)
-  subSteps.append(eq3)
   subSteps.append(h4)
+  
+  eq4 = "$" + latex(separableODE) + "$" + "\\\\ \\\\"
   subSteps.append(eq4)
+  
+  h5 = "Wich is first order separable" + "\\\\ \\\\"
   subSteps.append(h5)
-  step.append(subSteps)
-  solveArray.append(step)
-    
+  
   solutionSeparable = solveSeparable(str(separableODE.args[0]) + "= 0", 'u', user_type)
   solveArray += solutionSeparable[1]
 
   solveForU = solutionSeparable[2]
+
+  '''
+  ------------------------------------------------------
+  # Step 02: Get Explicit Solve
+  ------------------------------------------------------
+  '''
+  solveArray.append([])
+  step = solveArray[1]
+  step.append("- Undo the variable change" + "\\\\ \\\\")
+  step.append([])
+  subSteps = step[1]
+  
+  global finalSolve
+  finalSolve = []
+
+  def final_solve_timeout(expression, symbol):
+    global finalSolve
+    finalSolve = solve(expression, symbol)
+
+
   if (len(solveForU)) > 0:
     h6 = "Multiplying both sides by x and using the change of variable for each solution" + "\\\\ \\\\"
-    step = []
-    step.append("- Undo the variable change" + "\\\\ \\\\")
-    subSteps = []
     subSteps.append(h6)
     
     for particularSolveForU in solveForU:

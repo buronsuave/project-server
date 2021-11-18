@@ -147,4 +147,4 @@ def updateRecIntegrals():
 if __name__ == "__main__":
     global db
     db = None
-    app.run(debug = True, port = 4000, host='3.210.192.5')  
+    app.run()  
