@@ -15,7 +15,13 @@ def solveHomogeneous(odeString, functionName, user_type):
   # Init solve array
   solveArray = []
 
-  
+  '''
+  ------------------------------------------------------
+  # Initial algebraic analysis
+  ------------------------------------------------------
+  '''
+
+
   odeLeftString = odeString.split("=")[0]
   odeRightString = odeString.split("=")[1]
 
@@ -25,14 +31,6 @@ def solveHomogeneous(odeString, functionName, user_type):
   y = Function(functionName)
   equation = Eq(odeLeftSym - odeRightSym, 0)
 
-
-    '''
-    ------------------------------------------------------
-    # Step 01: Detect separable structure
-    ------------------------------------------------------
-    '''
-
-
   # Step 1
   left = equation.args[0]
   exp = solve(left, Derivative(y(x), x))
@@ -41,6 +39,13 @@ def solveHomogeneous(odeString, functionName, user_type):
   left = Derivative(y(x), x)
   # Define the change of variable
   functionF = aux
+
+
+  '''
+  ------------------------------------------------------
+  # Step 01: Propose the appropriate variable change to reduce to separable
+  ------------------------------------------------------
+  '''
 
   h0 = "Since it's homogeneous, the derivative can be expressed as a function that is also homogeneous, that is:" + "\\\\ \\\\"
   eq0 = "$" + latex(Eq(Derivative(y(x), x), functionF)) + "$" + "\\\\ \\\\"
