@@ -5,18 +5,33 @@ from sympy.parsing.latex import parse_latex
 
 from solvers.sys_solvers.solve_separable import *
 
-def solveHomogeneous(odeString, user_type):
+def solveHomogeneous(odeString, functionName, user_type):
+  
+  '''
+    ------------------------------------------------------
+    # Init solve
+    ------------------------------------------------------
+  '''
+  # Init solve array
+  solveArray = []
+
+  
   odeLeftString = odeString.split("=")[0]
   odeRightString = odeString.split("=")[1]
 
   odeLeftSym = parse_expr(odeLeftString)
   odeRightSym = parse_expr(odeRightString)
 
-  y = Function('y')
+  y = Function(functionName)
   equation = Eq(odeLeftSym - odeRightSym, 0)
 
-  # Init solve array
-  solveArray = []
+
+    '''
+    ------------------------------------------------------
+    # Step 01: Detect separable structure
+    ------------------------------------------------------
+    '''
+
 
   # Step 1
   left = equation.args[0]
