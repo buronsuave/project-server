@@ -5,7 +5,7 @@ from sympy.parsing.latex import parse_latex
 
 from solvers.sys_solvers.solve_linear import *
 
-def solveReducibleToLinear(odeString):  
+def solveReducibleToLinear(odeString, user_type):  
   odeLeftString = odeString.split("=")[0]
   odeRightString = odeString.split("=")[1]
 
@@ -68,7 +68,7 @@ def solveReducibleToLinear(odeString):
   odeStringEqRigth = equation.args[1]
   odeStringLinear = str(odeStringEqLeft) + "=" + str(odeStringEqRigth)
 
-  solveFromLinear = solveLinear(odeStringLinear, 'u')
+  solveFromLinear = solveLinear(odeStringLinear, 'u', user_type)
 
   solveArray += solveFromLinear[1]
 

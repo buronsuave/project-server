@@ -1,14 +1,13 @@
 from sympy import * 
 from sympy.abc import x 
 from sympy.parsing import parse_expr 
-from sympy.parsing.latex import parse_latex
 from anomalies.completeness_anomaly import CompletenessAnomaly
 
 from algebraics.operations import *
 from integrals.integrator import *
 from analytics.investigator import *
 
-def solveExact(odeString, functionName, user_type):  
+def solveExact(odeString, user_type):  
   
   '''
   ------------------------------------------------------
@@ -232,7 +231,7 @@ def solveExact(odeString, functionName, user_type):
 
 
     try:
-      process = PropagatingThread(target = final_solve_timeout, args=(functionF, Symbol(functionName)))
+      process = PropagatingThread(target = final_solve_timeout, args=(functionF, Symbol('y')))
       process.start()
       process.join(timeout=5)
 
@@ -324,7 +323,7 @@ def solveExact(odeString, functionName, user_type):
           print("Plot appended")      
       
     except:
-      subSteps.append("Can not get the explicit solution solving for " + functionName + "\\\\ \\\\")
+      subSteps.append("Can not get the explicit solution solving for y" + "\\\\ \\\\")
     
     def display_step(step):
       stepStr = ""

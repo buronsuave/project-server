@@ -35,12 +35,12 @@ def solve(inputString, user_type):
             return solveArray[1]
 
         elif odeType == "linear":
-            solveArray = solveLinear(str(equation) + "= 0", 'y')
+            solveArray = solveLinear(str(equation) + "= 0", 'y', user_type)
             print("Global Difficulty: " + str(global_difficulty))
             return solveArray[1]
 
         elif odeType == "reducible":
-            solveArray = solveReducibleToLinear(str(equation) + "= 0")
+            solveArray = solveReducibleToLinear(str(equation) + "= 0", user_type)
             print("Global Difficulty: " + str(global_difficulty))
             return solveArray[1]
 
@@ -50,7 +50,7 @@ def solve(inputString, user_type):
             return solveArray[1]
 
         elif odeType == "exact":
-            solveArray = solveExact(str(equation) + "= 0")
+            solveArray = solveExact(str(equation) + "= 0", user_type)
             print("Global Difficulty: " + str(global_difficulty))
             return solveArray[1]
 
