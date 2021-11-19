@@ -265,7 +265,7 @@ def solveLinear(odeString, functionName, user_type):
     h9s3 = "Solve for " + "\\\\ \\\\"
     subSteps.append(h9s3) 
 
-    eqAux = latex(Symbol(functionName+'(x)')) + + "\\\\ \\\\"
+    eqAux = latex(Symbol(functionName+'(x)')) + "\\\\ \\\\"
     eq9s3 = "$" + latex(equation)+ "$" + "\\\\ \\\\"
     subSteps.append(eq9s3)
     
@@ -369,6 +369,7 @@ def solveLinear(odeString, functionName, user_type):
       
     except:
       subSteps.append("Can not get the explicit solution solving for " + functionName + "\\\\ \\\\")
+
     def display_step(step):
       stepStr = ""
       for subStep in step:
@@ -378,11 +379,16 @@ def solveLinear(odeString, functionName, user_type):
     def display_solve(solveArray):
       solveStr = ""
       for stepAux in solveArray:
-        solveStr += stepAux[0]
-        solveStr += display_step(stepAux[1])
-      return solveStr    
-    return [display_solve(solveArray), solveArray]
+        if len(stepAux) != 0:
+          solveStr += stepAux[0]
+          solveStr += display_step(stepAux[1])
+        else:
+          solveArray.remove(stepAux)
+      return solveStr 
 
+    print(solveArray)   
+    return [display_solve(solveArray), solveArray]
+  
   except CompletenessAnomaly as ca:
     if ca.partial_solution[0][0] == "partial integral":
       step = solveArray[len(solveArray) - 1]

@@ -103,6 +103,35 @@ def solve(inputString, user_type):
             print(e.args[0])
         finally:
             raise ca
+    
+    except Exception as ga:
+        print(ga.args[0])
+        try:
+            # Launch DSolve intervention for solving 
+            # an undefined ODE type on server
+            solveSingle = dsolve(Eq(equation, 0), Function('y')(x))
+            clsa = CompletenessAnomaly([["", []]])
+
+            # Create single step in case of found a solution
+            solveArray = []
+            step = []
+            step.append("- Solve with DSolve (backup system): " +  
+            "\\\\ \\\\")
+            subSteps = []
+            h0 = "The server was not able to build the steps for " + \
+            "the solution." + "\\\\ \\\\" + \
+            "However, the solution found was the following:" + \
+            "\\\\ \\\\"
+            eq0 = "$" + latex(solveSingle) + "$" + "\\\\ \\\\"
+            subSteps.append(h0)
+            subSteps.append(eq0)
+            step.append(subSteps)
+            solveArray.append(step)
+            clsa.set_final_solve(solveArray)
+        except Exception as e:
+            print(e.args[0])
+        finally:
+            raise clsa        
 
 
 

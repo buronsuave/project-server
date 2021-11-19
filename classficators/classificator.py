@@ -335,6 +335,8 @@ def classify(odeString):
                 return 'exact'
             elif odeType is '1st_linear':
                 return 'linear'
+            elif odeType is 'Bernoulli_Integral':
+                return 'reducible'
     
     except Exception as e:
         print(e.args[0])
