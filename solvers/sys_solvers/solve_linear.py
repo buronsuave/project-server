@@ -121,7 +121,15 @@ def solveLinear(odeString, functionName, user_type):
     subSteps.append(eq4s2)    
     
     functionF = expand(functionF)
-    exponentM = integrate(expand(functionF), x)
+    
+    integralM = int_solve(expand(functionF), x)
+    exponentM = integralM["solution"]
+    subSteps.append("-------------------------------" + "\\\\ \\\\")
+    for int_substep in integralM["steps"]:
+      subSteps.append(int_substep["text"] + "\\\\ \\\\")
+      subSteps.append(int_substep["symbol"] + "\\\\ \\\\")
+      subSteps.append("-------------------------------" + "\\\\ \\\\")
+
     eq5s2 = "$" + latex(Eq(log(Function('M')(x)), exponentM)) + "$" + "\\\\ \\\\"
     subSteps.append(eq5s2)    
     
@@ -141,19 +149,18 @@ def solveLinear(odeString, functionName, user_type):
 
     functionM = functionM.replace(Integral(functionF, x), exponentM)
     functionM = Pow(E, exponentM)
-    functionM = simplify(functionM)
-
+    functionM = alg_simplify(functionM)
 
     h1s3 = "Multiplying the original equation by M(x):" + "\\\\ \\\\"
     subSteps.append(h1s3)
     
     equation = Eq(left, right)
-    left = Mul(left, functionM)
-    right = Add(Mul(Integer(-1), functionF, y(x), functionM), Mul(functionG, functionM))
+    left = alg_mul(left, functionM)
+    right = alg_add(Mul(Integer(-1), functionF, y(x), functionM), Mul(functionG, functionM))
     equation = Eq(left, right)
 
-    left = Add(left, Mul(functionF, y(x), functionM))
-    right = Add(right, Mul(functionF, y(x), functionM))
+    left = alg_add(left, Mul(functionF, y(x), functionM))
+    right = alg_add(right, Mul(functionF, y(x), functionM))
     equation = Eq(left, right)
     equationaux = Eq(expand(Mul( Function('M')(x), left, pow(functionM, Integer(-1)))), Mul( Function('M')(x), right, pow(functionM, Integer(-1))))
 
@@ -200,14 +207,14 @@ def solveLinear(odeString, functionName, user_type):
     left = Derivative(Mul(functionM, y(x)), x)
 
     equation = Eq(left, right)
-    left = Mul(left, Pow(Derivative(Mul(functionM, y(x)), x), Integer(-1)), Symbol('d'), Mul(y(x), functionM))
-    right = Mul(right, Symbol('dx'))
+    left = alg_mul(left, Pow(Derivative(Mul(functionM, y(x)), x), Integer(-1)), Symbol('d'), Mul(y(x), functionM))
+    right = alg_mul(right, Symbol('dx'))
     equation = Eq(left, right)
     h6s3 = "Integrating the left hand side, and indicating the integral at right hand side: " + "\\\\ \\\\"
     subSteps.append(h6s3)   
  
-    left = Mul(y(x), functionM)
-    right = Mul(right, Pow(Symbol('dx'), Integer(-1)))
+    left = alg_mul(y(x), functionM)
+    right = alg_mul(right, Pow(Symbol('dx'), Integer(-1)))
     eq6s3 = "$" + latex(Symbol('M(x)'+functionName+'(x)'))+ " = " + latex(Integral(Mul(Mul(right, Pow(functionM, Integer(-1))),Function('M')(x)),x)) + "$" + "\\\\ \\\\"
     subSteps.append(eq6s3)
  
@@ -222,8 +229,16 @@ def solveLinear(odeString, functionName, user_type):
     subSteps.append(eq7s3)
     
     right = expand(right)
-    right = integrate(right, x)
-    right = Add(right, Symbol('C'))
+
+    right_integral = int_solve(right, x)
+    right = right_integral["solution"]
+    subSteps.append("-------------------------------" + "\\\\ \\\\")
+    for int_substep in right_integral["steps"]:
+      subSteps.append(int_substep["text"] + "\\\\ \\\\")
+      subSteps.append(int_substep["symbol"] + "\\\\ \\\\")
+      subSteps.append("-------------------------------" + "\\\\ \\\\")
+
+    right = alg_add(right, Symbol('C'))
     equation = Eq(left, right)
     
     h8s3 = "Integrating the right hand side: " + "\\\\ \\\\"
@@ -244,8 +259,8 @@ def solveLinear(odeString, functionName, user_type):
     subSteps = step[1]
 
     left = y(x)
-    right = Mul(right, Pow(functionM, Integer(-1)))
-    right = simplify(right)
+    right = alg_mul(right, Pow(functionM, Integer(-1)))
+    right = alg_simplify(right)
     equation = Eq(left, right)
     h9s3 = "Solve for " + "\\\\ \\\\"
     subSteps.append(h9s3) 
@@ -354,9 +369,6 @@ def solveLinear(odeString, functionName, user_type):
       
     except:
       subSteps.append("Can not get the explicit solution solving for " + functionName + "\\\\ \\\\")
-
-
-
     def display_step(step):
       stepStr = ""
       for subStep in step:
