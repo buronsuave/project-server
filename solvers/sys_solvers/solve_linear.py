@@ -207,14 +207,14 @@ def solveLinear(odeString, functionName, user_type):
     left = Derivative(Mul(functionM, y(x)), x)
 
     equation = Eq(left, right)
-    left = alg_mul(left, Pow(Derivative(Mul(functionM, y(x)), x), Integer(-1)), Symbol('d'), Mul(y(x), functionM))
+    left = Mul(left, Pow(Derivative(Mul(functionM, y(x)), x), Integer(-1)), Symbol('d'), Mul(y(x), functionM))
     right = alg_mul(right, Symbol('dx'))
     equation = Eq(left, right)
     h6s3 = "Integrating the left hand side, and indicating the integral at right hand side: " + "\\\\ \\\\"
     subSteps.append(h6s3)   
  
     left = alg_mul(y(x), functionM)
-    right = alg_mul(right, Pow(Symbol('dx'), Integer(-1)))
+    right = Mul(right, Pow(Symbol('dx'), Integer(-1)))
     eq6s3 = "$" + latex(Symbol('M(x)'+functionName+'(x)'))+ " = " + latex(Integral(Mul(Mul(right, Pow(functionM, Integer(-1))),Function('M')(x)),x)) + "$" + "\\\\ \\\\"
     subSteps.append(eq6s3)
  
