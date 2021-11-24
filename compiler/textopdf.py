@@ -2,17 +2,26 @@ import uuid
 import pdflatex as ptex
 import base64
 import os
+from datetime import date
 
 def text_to_pdf(latex):
     # Create .tex file
     id = str(uuid.uuid1())
     filepath = f'compiler/files/{id}.tex'
+    today = date.today()
+    dateLatex = today.strftime("%B %d, %Y")
 
     with open(filepath, "w") as file_tex:
         file_tex.write("\\documentclass{article}\n")
         file_tex.write("\\usepackage{amsmath}\n")
+        file_tex.write("\\title{ODE Solution}\n")
+        file_tex.write("\\author{Solved by PWA for ODE}\n")
+        file_tex.write("\\date{"+dateLatex+"}\n")
+
         file_tex.write("\\begin{document}\n")
+        file_tex.write("\\maketitle\n")
         file_tex.write("\\noindent\n")
+        print(latex)
         file_tex.write(latex + "\n")
         file_tex.write("\\end{document}\n")
     

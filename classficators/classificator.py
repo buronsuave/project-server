@@ -181,6 +181,9 @@ def checkExact(odeString):
 
     for term in equation.args[0].args:
         if 'Derivative' in str(term):
+            if len(term.args[1]) > 1:
+                return False
+                
             functionQ = Add(functionQ, Mul(term, Pow(Derivative(Symbol('y'), x), Integer(-1))))
         else:
             functionP = Add(functionP, term)
@@ -239,38 +242,26 @@ def checkSuperiorOrder(odeString):
 
     odeLeftSym = parse_expr(odeLeftString)
     odeRightSym = parse_expr(odeRightString)
+
     y = Function('y')
     equation = Eq(odeLeftSym - odeRightSym, 0)
     equation = equation.subs(y(x), Symbol('y'))
-    equationsolve = parse_expr("E**(r*z)")
 
     for term in equation.args[0].args:
         if 'Derivative' in str(term):
+            print(term)
             if type(term) is Mul:
                 for subterm in term.args:
-                    if 'Derivative' in str(subterm):
-                        try:
-                            expression = term.subs(Derivative(equationsolve, z, subterm.args[1].args[1]), diff( equationsolve, x, subterm.args[1].args[1]))
-                            functionF = Add( functionF , expression)
-                            if 'x' in str(functionF):
-                                return False
-                        except:
-                            expression = term.subs(Derivative(equationsolve, z), diff( equationsolve, x))
-                            functionF = Add( functionF , expression)
-                            if 'x' in str(functionF):
-                                return False
+                    if not ('Derivative' in str(subterm)):
+                        if 'x' in str(subterm) or 'y' in str(subterm):
+                            return False            
+                    else:
+                        continue
             else:
-                expression = term.subs(Derivative(equationsolve, z, term.args[1].args[1]), diff( equationsolve, z , term.args[1].args[1]))
-                functionF = Add( functionF , expression)
-                if 'x' in str(functionF):
-                    return False
+                continue  
         else:
-            if 'r' in str(term):
-                functionF = Add( functionF , term)
-                if 'x' in str(functionF):
-                    return False
-            else:
-                functionT = Mul(term, -1)
+            if 'x' in str(term) and 'y' in str(term):
+                return False
 
     return True
 
@@ -285,9 +276,10 @@ def classify(odeString):
 
     # Check if the equation is 1st order linear
     try:
-        if checkLinear(odeString, "y"):
+        if checkLinear(odeString):
             return "linear"
-    except:
+    except Exception as e:
+        print(e)
         print("Non Linear")
     
     # Check if the equation is reducible to linear
@@ -315,7 +307,8 @@ def classify(odeString):
     try:
         if checkSuperiorOrder(odeString):
             return "superior"
-    except:
+    except Exception as excep:
+        print(excep.args[0])
         print("Non Superior Order")
 
     # Use dsolve to classify the equation

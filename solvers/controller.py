@@ -9,6 +9,7 @@ from solvers.sys_solvers.solve_linear import solveLinear
 from solvers.sys_solvers.solve_homogeneous import solveHomogeneous
 from solvers.sys_solvers.solve_exact import solveExact
 from solvers.sys_solvers.solve_reducible_linear import solveReducibleToLinear
+from solvers.sys_solvers.solve_n_order import solveNLinear
 from classficators.classificator import classify
 
 def solve(inputString, user_type):
@@ -51,6 +52,11 @@ def solve(inputString, user_type):
 
         elif odeType == "exact":
             solveArray = solveExact(str(equation) + "= 0", user_type)
+            print("Global Difficulty: " + str(global_difficulty))
+            return solveArray[1]
+
+        elif odeType == "superior":
+            solveArray = solveNLinear(str(equation) + "= 0", "y", user_type)
             print("Global Difficulty: " + str(global_difficulty))
             return solveArray[1]
 

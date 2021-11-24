@@ -109,7 +109,16 @@ def parseLatex(inputString):
     leftSymbolStr = leftSymbolStr.replace("M", "y(x)")
     leftSymbol = parse_expr(leftSymbolStr)
 
-    
     leftSymbol = leftSymbol.subs(Symbol('e'), E)
+
+    regexp =  r'd\*\*[2-9]\*y\(x\)\/dx\*\*[2-9]'
+    foo= re.compile(regexp)
+    leftSymbolString = str(leftSymbol)
+    Searchall= foo.findall(leftSymbolString)
+
+    if len(Searchall) > 0:
+        for oldvalue in Searchall:
+            leftSymbolString = leftSymbolString.replace(oldvalue, "Derivative(y(x),x," + oldvalue[-1] + ")")
+        leftSymbol = parse_expr(leftSymbolString)
 
     return leftSymbol

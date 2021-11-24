@@ -1,0 +1,26 @@
+\documentclass{article}
+\usepackage{amsmath}
+\title{ODE Solution}
+\author{Solved by PWA for ODE}
+\date{November 24, 2021}
+\begin{document}
+\maketitle
+\noindent
+\section{Arrange the equation and subsitute the potential solution}\\
+Initial equation is given by: \\ \\$- \sin{\left(3 x \right)} - \frac{d}{d x} y{\left(x \right)} + \frac{d^{3}}{d x^{3}} y{\left(x \right)} = 0$\\ \\$- \sin{\left(3 x \right)} - \frac{d}{d x} y + \frac{d^{3}}{d x^{3}} y = 0$\\ \\Lets propose the solution: \\ \\$y(x) = e^{r x}$\\ \\Substituting\\ \\$- \sin{\left(3 x \right)} - \frac{\partial}{\partial x} e^{r x} + \frac{\partial^{3}}{\partial x^{3}} e^{r x} = 0$\\ \\\\
+\section{Apply derivatives and simplify}\\
+Applying derivatives: \\ \\$r^{3} e^{r x} - r e^{r x} = 0$\\ \\Simplifying: \\ \\$r \left(r - 1\right) \left(r + 1\right) e^{r x} = 0$\\ \\\\
+\section{Obtain roots}\\
+can not be zero then: \\ \\$r \left(r - 1\right) \left(r + 1\right) = 0$\\ \\${r}_{0} = -1$\\ \\${r}_{1} = 1$\\ \\${r}_{2} = 0$\\ \\\\
+\section{Substitute the roots and Final homogeneous solution}\\
+Substituting the obtained solutions in the proposed solution and adding up: \\ \\$y(x) = e^{x} {C}_{1} + {C}_{2} + e^{- x} {C}_{0}$\\ \\$y(x) = \left(e^{2 x} {C}_{1} + e^{x} {C}_{2} + {C}_{0}\right) e^{- x}$\\ \\$y(x) = e^{x} {C}_{1} + {C}_{2} + e^{- x} {C}_{0}$\\ \\\\
+\section{Obtain non constant coeficcients of complementary function}\\
+Searching up for the system of matrices: \\ \\$\left[\begin{matrix}0 & e^{x} & 1\\0 & e^{x} & 0\\1 & e^{x} & 0\end{matrix}\right]$\\ \\ \\$\left[\begin{matrix}e^{- x} & 0 & 1\\- e^{- x} & 0 & 0\\e^{- x} & 1 & 0\end{matrix}\right]$\\ \\ \\$\left[\begin{matrix}e^{- x} & e^{x} & 0\\- e^{- x} & e^{x} & 0\\e^{- x} & e^{x} & 1\end{matrix}\right]$\\ \\ \\$\left[\begin{matrix}e^{- x} & e^{x} & 1\\- e^{- x} & e^{x} & 0\\e^{- x} & e^{x} & 0\end{matrix}\right]$\\ \\ \\\\
+\section{Obtaining determinants of each matrix:}\\
+Obtaining determinants of each function: \\ \\${P}_{0} = - e^{x}$\\ \\ \\${P}_{1} = - e^{- x}$\\ \\ \\${P}_{2} = 2$\\ \\ \\${P}_{3} = -2$\\ \\ \\Taking into account that: \\ \\$T{\left(x \right)} = \sin{\left(3 x \right)}$\\ \\${U}_{0} = \int \frac{T{\left(x \right)} {P}_{0}}{{P}_{3}}\, dx$\\ \\${U}_{0} = \int \frac{T{\left(x \right)} e^{x}}{2}\, dx$\\ \\${U}_{0} = \int \frac{e^{x} \sin{\left(3 x \right)}}{2}\, dx$\\ \\${U}_{0} = \frac{e^{x} \sin{\left(3 x \right)}}{20} - \frac{3 e^{x} \cos{\left(3 x \right)}}{20}$\\ \\${U}_{1} = \int \frac{T{\left(x \right)} {P}_{1}}{{P}_{3}}\, dx$\\ \\${U}_{1} = \int \frac{T{\left(x \right)} e^{- x}}{2}\, dx$\\ \\${U}_{1} = \int \frac{e^{- x} \sin{\left(3 x \right)}}{2}\, dx$\\ \\${U}_{1} = - \frac{e^{- x} \sin{\left(3 x \right)}}{20} - \frac{3 e^{- x} \cos{\left(3 x \right)}}{20}$\\ \\${U}_{2} = \int \frac{T{\left(x \right)} {P}_{2}}{{P}_{3}}\, dx$\\ \\${U}_{2} = \int \left(- T{\left(x \right)}\right)\, dx$\\ \\${U}_{2} = \int \left(- \sin{\left(3 x \right)}\right)\, dx$\\ \\${U}_{2} = \frac{\cos{\left(3 x \right)}}{3}$\\ \\\\
+\section{Obtain final complement by substituting the integral factors in the constants of the homogeneous solution:}\\
+Substitution: \\ \\$Y(x) = \frac{\cos{\left(3 x \right)}}{30}$\\ \\$Y(x) = \frac{\cos{\left(3 x \right)}}{30}$\\ \\Rewriting complex functions in terms of cos and sin: \\ \\$Y(x) = \frac{\cos{\left(3 x \right)}}{30}$\\ \\\\
+\section{Obtain final complement by substituting the integral factors in the constants of the homogeneous solution:}\\
+Finally the general solution is the adition of the homogeneous solution and the particular solution:\\ \\Adding both the final solution is: \\ \\$y(x) = e^{x} {C}_{1} + \frac{\cos{\left(3 x \right)}}{30} + {C}_{2} + e^{- x} {C}_{0}$\\ \\\\
+
+\end{document}

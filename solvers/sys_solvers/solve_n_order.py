@@ -5,6 +5,8 @@ from anomalies.completeness_anomaly import CompletenessAnomaly
 
 def solveNLinear(odeString, functionName, user_type):
   
+  print("In the N linear solver")
+
   try:
     '''
       ------------------------------------------------------
@@ -36,9 +38,10 @@ def solveNLinear(odeString, functionName, user_type):
     # Step 01: Subtitute the potential solution 
     ------------------------------------------------------
     '''
+    print("Step 1")
     solveArray.append([])
     step = solveArray[0]
-    step.append(" -Arrange the equation and subsitute the potential solution"+ "\\\\ \\\\")
+    step.append("- Arrange the equation and subsitute the potential solution"+ "\\\\ \\\\")
     step.append([])
     subSteps = step[1]
 
@@ -69,9 +72,10 @@ def solveNLinear(odeString, functionName, user_type):
     # Step 02: Evaluate the solution on the SDE
     ------------------------------------------------------
     '''
+    print("Step 2")
     solveArray.append([])
     step = solveArray[1]
-    step.append(" -Apply derivatives and simplify" + "\\\\ \\\\")
+    step.append("- Apply derivatives and simplify" + "\\\\ \\\\")
     step.append([])
     subSteps = step[1]
 
@@ -126,9 +130,10 @@ def solveNLinear(odeString, functionName, user_type):
     # Step 03: Obtaining the roots 
     ------------------------------------------------------
     '''
+    print("Step 3")
     solveArray.append([])
     step = solveArray[2]
-    step.append(" -Obtain roots" + "\\\\ \\\\")
+    step.append("- Obtain roots" + "\\\\ \\\\")
     step.append([])
     subSteps = step[1]
 
@@ -138,7 +143,7 @@ def solveNLinear(odeString, functionName, user_type):
 
     #Simplify if posible
 
-    h0 =  "can't be zero then: " + "\\\\ \\\\"
+    h0 =  "Since the exponential function can not be zero, then: " + "\\\\ \\\\"
     subSteps.append(h0)
     
     equationaux = factor(equationaux)
@@ -209,9 +214,10 @@ def solveNLinear(odeString, functionName, user_type):
     # Step 04: Substitute the roots and Final homogeneous solution
     ------------------------------------------------------
     '''
+    print("Step 4")
     solveArray.append([])
     step = solveArray[3]
-    step.append("-Substitute the roots and Final homogeneous solution"+ "\\\\ \\\\")
+    step.append("- Substitute the roots and Final homogeneous solution"+ "\\\\ \\\\")
     step.append([])
     subSteps = step[1]
 
@@ -263,22 +269,23 @@ def solveNLinear(odeString, functionName, user_type):
       subSteps.append("$" + latex(equationHomAux) + "$" + "\\\\ \\\\")
     equation = equationHomAux
 
-    '''
-    ------------------------------------------------------
-    # Step 05: Equate Both Sides
-    ------------------------------------------------------
-    '''
-    solveArray.append([])
-    step = solveArray[4]
-    step.append(" -Obtain non constant coeficcients of complementary function"+ "\\\\ \\\\")
-    step.append([])
-    subSteps = step[1]
-
-    h0 = "Searching up for the system of matrices: " + "\\\\ \\\\"
-    subSteps.append(h0)
-
     if functionT != 0:
-    #Create and DIsplay Matrices
+      #Create and DIsplay Matrices
+      '''
+      ------------------------------------------------------
+      # Step 05: Equate Both Sides
+      ------------------------------------------------------
+      '''
+      print("Step 5")
+      solveArray.append([])
+      step = solveArray[4]
+      step.append("- Obtain non constant coeficcients of complementary function"+ "\\\\ \\\\")
+      step.append([])
+      subSteps = step[1]
+
+      h0 = "Searching up for the system of matrices: " + "\\\\ \\\\"
+      subSteps.append(h0)
+
       Matrices = []
       for matrix in FuncArray:
         Matrices.append(Matrix(matrix))
@@ -287,7 +294,7 @@ def solveNLinear(odeString, functionName, user_type):
     #Calculate the determinant of each Matrix
       solveArray.append([])
       step = solveArray[5]
-      step.append(" -Obtaining determinants of each matrix:"+ "\\\\ \\\\")
+      step.append("- Obtaining determinants of each matrix:"+ "\\\\ \\\\")
       step.append([])
       subSteps = step[1]
 
@@ -306,15 +313,17 @@ def solveNLinear(odeString, functionName, user_type):
       # Step 06: Get Explicit Solve
       ------------------------------------------------------
       '''
+      print("Step 6")
       solveArray.append([])
       step = solveArray[5]
-      step.append(" -Obtaining Integral factors:"+ "\\\\ \\\\")
+      step.append("- Obtaining Integral factors"+ "\\\\ \\\\")
       step.append([])
       subSteps = step[1]
 
       #Calculate Integral Factors
       Factors = [] 
-      subSteps.append("Taking into account that "  + "$" + latex(Eq(Function('T')(x), functionT)) + "$" + "\\\\ \\\\")
+      subSteps.append("Taking into account that: " + "\\\\ \\\\")
+      subSteps.append("$" + latex(Eq(Function('T')(x), functionT)) + "$" + "\\\\ \\\\")
       for i in range(0, len(Dets)-1):
 
         subSteps.append("$" + latex(Eq(Indexed(Symbol('U'), i), Integral(nsimplify(Mul(Function('T')(x), Indexed(Symbol('P'), i), pow(Indexed(Symbol('P'), len(Dets)-1),-1))), x))) + "$" + "\\\\ \\\\")
@@ -342,9 +351,10 @@ def solveNLinear(odeString, functionName, user_type):
       # Step 07: Get Explicit Solve
       ------------------------------------------------------
       '''
+      print("Step 7")
       solveArray.append([])
       step = solveArray[6]
-      step.append(" -Obtain final complement by substituting the integral factors" + "\\\\ \\\\" + "in the constants of the homogeneous solution:" + "\\\\ \\\\")
+      step.append("- Obtain final complement by substituting the integral factors in the constants of the homogeneous solution" + "\\\\ \\\\")
       step.append([])
       subSteps = step[1]
       
@@ -352,7 +362,7 @@ def solveNLinear(odeString, functionName, user_type):
       for i in range(0, len(Dets)-1):
         functionT  = functionT.subs(Indexed(Symbol('C', real = True), i), Factors[i])    
 
-      h0 = latex("Substitution: ") + "\\\\ \\\\"
+      h0 = "Substitution: " + "\\\\ \\\\"
       subSteps.append(h0)
       subSteps.append("$" + latex(expand(Eq(Symbol('Y(x)'), functionT))) + "$" + "\\\\ \\\\" )
       subSteps.append("$" + latex(expand(Eq(Symbol('Y(x)'), simplify(functionT)))) + "$" + "\\\\ \\\\" )
@@ -365,17 +375,18 @@ def solveNLinear(odeString, functionName, user_type):
       
       '''
       ------------------------------------------------------
-      # Step 06: Subtitute integral factors
+      # Step 08: Subtitute integral factors
       ------------------------------------------------------
       '''
+      print("Step 8")
       solveArray.append([])
-      step = solveArray[6]
-      step.append(" -Obtain final complement by substituting the integral factors" + "\\\\ \\\\" + "in the constants of the homogeneous solution:" + "\\\\ \\\\")
+      step = solveArray[7]
+      step.append("- Obtain final complement by substituting the integral factors in the constants of the homogeneous solution" + "\\\\ \\\\")
       step.append([])
       subSteps = step[1]
   
       
-      subSteps.append(" -Finally the general solution is the adition of the homogeneous solution and the particular solution:"+ "\\\\ \\\\")
+      subSteps.append("Finally the general solution is the adition of the homogeneous solution and the particular solution:"+ "\\\\ \\\\")
       
       functionF = Add(simplify(functionF), functionT)
       h0 = "Adding both the final solution is: " + "\\\\ \\\\"
@@ -384,6 +395,7 @@ def solveNLinear(odeString, functionName, user_type):
       eq1 = "$" + latex(simplify(expand(Eq(Symbol('y(x)'), functionF)))) + "$" + "\\\\ \\\\"
       subSteps.append(eq1)
 
+      print("Step 8.1")
       if not functionF.is_real:  
         functionF = trigsimp(logcombine(simplify(functionF.rewrite(cos)), force=True))
 
@@ -394,14 +406,18 @@ def solveNLinear(odeString, functionName, user_type):
         
         realpart = re(functionFAux.subs(x, re(x))).subs(re(x), x)
         imagpart = im(functionFAux.subs(x, re(x))).subs(re(x), x)
+
+        print("Step 8.2")
         for i in range(0, len(Dets)-1):
           imagpart = imagpart.subs(Indexed(Symbol("C", real=True), i),Indexed(Symbol("K", real=True), i))
-  
+
+        print("Step 8.3")
         functionFAux = imagpart + realpart
         eq3 = "$" + latex(Eq(Symbol('y(x)'), simplify(simplify(functionFAux)))) + "$" + "\\\\ \\\\"
         
         imagpart = abs(imagpart)
-        if ((len(imagpart.args) > 1) or not (type(imagpart.args[0]) is arg)):
+        if (len(imagpart.args) > 1):
+          print("Step 8.4")
           subSteps.append(h1)
           subSteps.append(eq2)
           subSteps.append(eq3)  
@@ -415,9 +431,13 @@ def solveNLinear(odeString, functionName, user_type):
     def display_solve(solveArray):
       solveStr = ""
       for stepAux in solveArray:
-        solveStr += stepAux[0]
-        solveStr += display_step(stepAux[1])
+        if (len(stepAux) > 0):
+          solveStr += stepAux[0]
+          solveStr += display_step(stepAux[1])
+        else:
+          solveArray.remove(stepAux)
       return solveStr    
+
     return [ display_solve(solveArray), solveArray ]
   
   except CompletenessAnomaly as ca:
@@ -435,3 +455,6 @@ def solveNLinear(odeString, functionName, user_type):
     ca.set_partial_solution(solveArray)
 
     raise ca
+  
+  except Exception as e:
+    print(e)

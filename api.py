@@ -68,6 +68,7 @@ def parseToLatex():
 
     try:
         equation = parseSympy(inputString)
+        print(equation)
         equationLatex = latex(equation)
     except Exception as e:
         return jsonify({ "status": e.args[0] })
@@ -80,11 +81,14 @@ def parseToLatex():
 
 @app.route("/image/text", methods = ["POST"])
 def getTextFromImage():
+    print("Image requesting")
 
     @after_this_request
     def add_header(response):
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
+
+    print("Image requesting")
 
     # Check inputs
     jsonInput = request.get_json()
@@ -147,4 +151,4 @@ def updateRecIntegrals():
 if __name__ == "__main__":
     global db
     db = None
-    app.run()  
+    app.run(debug=True, host='localhost', port=5000)  
