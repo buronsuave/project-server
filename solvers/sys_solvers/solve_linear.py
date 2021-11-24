@@ -218,10 +218,10 @@ def solveLinear(odeString, functionName, user_type):
     eq6s3 = "$" + latex(Symbol('M(x)'+functionName+'(x)'))+ " = " + latex(Integral(Mul(Mul(right, Pow(functionM, Integer(-1))),Function('M')(x)),x)) + "$" + "\\\\ \\\\"
     subSteps.append(eq6s3)
  
-    h7s3 = "Substituting M(x) = " + "\\\\ \\\\"
+    h7s3 = "Doing the substitution: " + "\\\\ \\\\"
     subSteps.append(h7s3)
     
-    eqAux1 = "$" + latex(functionM) + "$" +  "\\\\ \\\\"
+    eqAux1 = "$M(x) = " + latex(functionM) + "$" +  "\\\\ \\\\"
     subSteps.append(eqAux1) 
     
     equationaux = Eq(left, Integral(right,x))
@@ -262,19 +262,22 @@ def solveLinear(odeString, functionName, user_type):
     right = alg_mul(right, Pow(functionM, Integer(-1)))
     right = alg_simplify(right)
     equation = Eq(left, right)
-    h9s3 = "Solve for " + "\\\\ \\\\"
+    h9s3 = "Solve for " + functionName + "in the equation: \\\\ \\\\"
     subSteps.append(h9s3) 
 
-    eqAux = latex(Symbol(functionName+'(x)')) + "\\\\ \\\\"
     eq9s3 = "$" + latex(equation)+ "$" + "\\\\ \\\\"
     subSteps.append(eq9s3)
+
+    h10s3 = "Gets: " +  "\\\\ \\\\"
+    subSteps.append(h10s3) 
     
     global finalSolve
     finalSolve = []
+    finalSolve.append(equation.args[1])
     
     def final_solve_timeout(expression, symbol):
       global finalSolve
-      finalSolve = solve(expression, symbol)
+      finalSolve += solve(expression, symbol)
 
     try:
       process = PropagatingThread(target = final_solve_timeout, args=(equation, Symbol(functionName)))
@@ -286,7 +289,7 @@ def solveLinear(odeString, functionName, user_type):
         subSteps.append("$" + latex(eq1s6) + "$" + "\\\\ \\\\") 
 
         # Analytic intervention for all the single solves if is teacher
-        if (user_type == 'teacher'):
+        if (user_type == 'teacher' and functionName == "y"):
           print("Teacher")
           try:
             roots = []
@@ -342,7 +345,7 @@ def solveLinear(odeString, functionName, user_type):
             print("Error with inflexions")
             print(e)
 
-      if (user_type == "teacher"):
+      if (user_type == "teacher" and functionName == "y"):
         '''
         ------------------------------------------------------
         # Step 07: Generate Plot
@@ -386,8 +389,8 @@ def solveLinear(odeString, functionName, user_type):
           solveArray.remove(stepAux)
       return solveStr 
 
-    print(solveArray)   
-    return [display_solve(solveArray), solveArray]
+    print(finalSolve)   
+    return [display_solve(solveArray), solveArray, finalSolve]
   
   except CompletenessAnomaly as ca:
     if ca.partial_solution[0][0] == "partial integral":

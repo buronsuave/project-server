@@ -116,7 +116,7 @@ def solveExact(odeString, user_type):
     eq2s2 = "$" + latex(eqAux) + "$" + "\\\\ \\\\"
     subSteps.append(eq2s2)
     
-    h3s2 = latex("Integrating: ")  + "\\\\ \\\\"
+    h3s2 = "Integrating: "  + "\\\\ \\\\"
     subSteps.append(h3s2)
 
     eqAux = Eq(Function('F')(Symbol('x'), Symbol('y')), functionF)
@@ -132,7 +132,7 @@ def solveExact(odeString, user_type):
     '''
     solveArray.append([])
     step = solveArray[2]
-    step.append(latex("- Use the properties of the exact equation to find (y)") + "\\\\ \\\\")
+    step.append("- Use the properties of the exact equation to find (y)" + "\\\\ \\\\")
     step.append([])
     subSteps = step[1]
     
@@ -186,7 +186,7 @@ def solveExact(odeString, user_type):
     gIntValue = integrate(rightGSolveSide[0], Symbol('y'))
     functionF = Add(functionF, Mul(functionG(Symbol('y')), Integer(-1)), gIntValue)
 
-    h1s4 = "Integrating both sides to get " + "$" + latex(Function('g')(Symbol('y'))) +  "$" + "\\\\ \\\\"
+    h1s4 = "Integrating both sides to get g(y)" + "\\\\ \\\\"
     subSteps.append(h1s4)
 
     eq1s4 = "$" + latex(Function('g')(Symbol('y'))) +  " = " + latex(Integral(rightGSolveSide[0], Symbol('y'))) + "$" + "\\\\ \\\\"
@@ -228,7 +228,6 @@ def solveExact(odeString, user_type):
     def final_solve_timeout(expression, symbol):
       global finalSolve
       finalSolve = solve(expression, symbol)
-
 
     try:
       process = PropagatingThread(target = final_solve_timeout, args=(functionF, Symbol('y')))
@@ -334,8 +333,11 @@ def solveExact(odeString, user_type):
     def display_solve(solveArray):
       solveStr = ""
       for stepAux in solveArray:
-        solveStr += stepAux[0]
-        solveStr += display_step(stepAux[1])
+        if len(stepAux) != 0:
+          solveStr += stepAux[0]
+          solveStr += display_step(stepAux[1])
+        else:
+          solveArray.remove(stepAux)
       return solveStr    
     return [ display_solve(solveArray), solveArray ]
 

@@ -11,4 +11,4 @@ class CompletenessAnomaly(Exception):
         self.partial_solution.append(solve)
 
     def to_json(self):
-        return {"partial": self.partial_solution, "message": self.base_message, "kind": self.kind}
+        return {"partial": self.partial_solution, "message": self.base_message}

@@ -55,7 +55,7 @@ def solveHomogeneous(odeString, functionName, user_type):
     #Define function u(x)
     u = Function('u')
 
-    h0 = "Since it's homogeneous, the derivative can be expressed as a function that is also homogeneous, that is:" + "\\\\ \\\\"
+    h0 = "Since it is homogeneous, the derivative can be expressed as a function that is also homogeneous, that is:" + "\\\\ \\\\"
     subSteps.append(h0)
     
     eq0 = "$" + latex(Eq(Derivative(y(x), x), functionF)) + "$" + "\\\\ \\\\"
@@ -101,6 +101,7 @@ def solveHomogeneous(odeString, functionName, user_type):
 
     #Final Solution
     solveForU = solutionSeparable[2]
+    print(solveForU)
 
     '''
     ------------------------------------------------------
@@ -108,7 +109,7 @@ def solveHomogeneous(odeString, functionName, user_type):
     ------------------------------------------------------
     '''
     solveArray.append([])
-    step = solveArray[1]
+    step = solveArray[len(solveArray) - 1]
     step.append("- Undo the variable change" + "\\\\ \\\\")
     step.append([])
     subSteps = step[1]
@@ -116,16 +117,10 @@ def solveHomogeneous(odeString, functionName, user_type):
     global finalSolve
     finalSolve = []
 
-    def final_solve_timeout(expression, symbol):
-      global finalSolve
-      finalSolve = solve(expression, symbol)
-
-
     if (len(solveForU)) > 0:
         try:
-          process = PropagatingThread(target = final_solve_timeout, args=(solveForU, Symbol(functionName)))
-          process.start()
-          process.join(timeout=5)
+          for singleSolveForU in solveForU:
+            finalSolve.append(alg_mul(singleSolveForU, x))          
 
           for singleSolve in finalSolve:
             eq1s6 = Eq(y(x), singleSolve)
@@ -195,7 +190,7 @@ def solveHomogeneous(odeString, functionName, user_type):
             ------------------------------------------------------
             '''
             solveArray.append([])
-            step = solveArray[6]
+            step = solveArray[len(solveArray) - 1]
             step.append("- Graphs" + "\\\\ \\\\")
             step.append([])
             subSteps = step[1]
@@ -225,9 +220,13 @@ def solveHomogeneous(odeString, functionName, user_type):
     def display_solve(solveArray):
       solveStr = ""
       for stepAux in solveArray:
-        solveStr += stepAux[0]
-        solveStr += display_step(stepAux[1])
+        if len(stepAux) != 0:
+          solveStr += stepAux[0]
+          solveStr += display_step(stepAux[1])
+        else:
+          solveArray.remove(stepAux)
       return solveStr    
+
     return [ display_solve(solveArray), solveArray ]  
   
   except CompletenessAnomaly as ca:

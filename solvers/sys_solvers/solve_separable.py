@@ -234,8 +234,7 @@ def solveSeparable(odeString, functionName, user_type):
         subSteps.append("$" + latex(eq1s6) + "$" + "\\\\ \\\\") 
 
         # Analytic intervention for all the single solves if is teacher
-        if (user_type == 'teacher'):
-          print("Teacher")
+        if (user_type == 'teacher' and functionName == 'y'):
           try:
             roots = []
             roots_process = PropagatingThread(target = get_roots, args = [singleSolve, roots])
@@ -290,7 +289,7 @@ def solveSeparable(odeString, functionName, user_type):
             print("Error with inflexions")
             print(e)
 
-      if (user_type == "teacher"):
+      if (user_type == "teacher" and functionName == 'y'):
         '''
         ------------------------------------------------------
         # Step 07: Generate Plot
